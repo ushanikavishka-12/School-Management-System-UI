@@ -1,0 +1,39 @@
+<!-- ==========================================================================
+     Top Navigation Bar
+     Shared across every page. Loaded into #topbar-placeholder by js/components.js
+     The nav link matching the current page automatically gets the "active" class
+     (see highlightActiveNavLink() in js/components.js).
+     ========================================================================== -->
+<header class="topbar">
+
+  <div class="topbar-left">
+    <div class="brand-logo">
+      <span class="brand-logo-icon">🎓</span>
+      <div class="brand-logo-text">
+        <span class="brand-name">Bright Future</span>
+        <span class="brand-sub">International School</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="topbar-nav">
+    <a href="dashboard.html" class="nav-link" data-page="dashboard.html">Dashboard</a>
+    <a href="student.html" class="nav-link" data-page="student.html">Student</a>
+    <a href="teachers.html" class="nav-link" data-page="teachers.html">Teachers</a>
+    <a href="classes.html" class="nav-link" data-page="classes.html">Classes</a>
+    <a href="attendance.html" class="nav-link" data-page="attendance.html">Attendance</a>
+    <a href="grades.html" class="nav-link" data-page="grades.html">Grades</a>
+  </nav>
+
+  <div class="topbar-right">
+    <button class="icon-btn" title="Calendar">📅</button>
+    <button class="icon-btn" title="Notifications">🔔</button>
+
+    <div class="admin-menu">
+      <span class="admin-avatar">👤</span>
+      <span class="admin-name">Admin</span>
+      <span class="admin-caret">▾</span>
+    </div>
+  </div>
+
+</header>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard | Bright Future International School</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/dashboard.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<!-- Chart.js, used for the Students Attendance + Academic Performance charts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body data-page="dashboard">
+
+  <!-- Topbar gets injected here by js/components.js -->
+  <div id="topbar-placeholder"></div>
+
+  <main class="page-body">
+
+    <!-- Welcome banner -->
+    <section class="welcome-banner">
+      <div class="welcome-text">
+        <span class="welcome-eyebrow">Welcome back</span>
+        <h1 class="welcome-name">Principal Saara</h1>
+        <p class="welcome-sub">Here's an overview of your school today.</p>
+
+        <div class="welcome-date">📅 <span id="todayDate">June 21, 2026</span></div>
+
+        <div class="welcome-actions">
+          <button class="welcome-btn btn-blue" onclick="handleQuickAction('Add Student')">➕ Add Student</button>
+          <button class="welcome-btn btn-green" onclick="handleQuickAction('Take Attendance')">✅ Take Attendance</button>
+          <button class="welcome-btn btn-outline-orange" onclick="handleQuickAction('New Admission')">📄 New Admission</button>
+        </div>
+      </div>
+
+      <!-- Save a classroom photo as images/classroom.jpg -->
+      <img class="welcome-photo" src="images/classroom.jpg" alt="Classroom"
+           onerror="this.style.display='none';" />
+    </section>
+
+    <!-- Stat cards -->
+    <section class="stats-grid">
+      <div class="stat-card stat-blue">
+        <div class="stat-icon">🎓</div>
+        <div class="stat-info">
+          <span class="stat-label">Total Student</span>
+          <span class="stat-value">1928</span>
+          <span class="stat-trend up">↑ 12.8%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-orange">
+        <div class="stat-icon">🏷</div>
+        <div class="stat-info">
+          <span class="stat-label">Total Classes</span>
+          <span class="stat-value">45</span>
+          <span class="stat-trend up">↑ 3.6%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-red">
+        <div class="stat-icon">📝</div>
+        <div class="stat-info">
+          <span class="stat-label">Up coming Exams</span>
+          <span class="stat-value">8</span>
+          <span class="stat-trend up">↑ 3%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-icon">🧑‍🏫</div>
+        <div class="stat-info">
+          <span class="stat-label">Total Teachers</span>
+          <span class="stat-value">692</span>
+          <span class="stat-trend up">↑ 5.4%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-purple">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <span class="stat-label">Today's Attendance</span>
+          <span class="stat-value">93.6%</span>
+          <span class="stat-trend up">↑ 5.9%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-teal">
+        <div class="stat-icon">💲</div>
+        <div class="stat-info">
+          <span class="stat-label">School Revenue</span>
+          <span class="stat-value">$ 1500</span>
+          <span class="stat-trend up">↑ 8.7%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts + Events row -->
+    <section class="panels-grid">
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <h2 class="panel-title">Students Attendance</h2>
+          <select class="panel-select" id="attendanceRangeSelect">
+            <option>This Week</option>
+            <option>This Month</option>
+            <option>This Term</option>
+          </select>
+        </div>
+        <canvas id="attendanceChart" height="200"></canvas>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <h2 class="panel-title">Upcoming Events</h2>
+          <a href="#" class="view-all-link">View All</a>
+        </div>
+        <div id="upcomingEventsList"><!-- Rendered by js/dashboard.js --></div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <h2 class="panel-title">Academic Performance</h2>
+          <select class="panel-select" id="performanceRangeSelect">
+            <option>This Term</option>
+            <option>This Year</option>
+          </select>
+        </div>
+        <canvas id="performanceChart" height="200"></canvas>
+      </div>
+
+    </section>
+
+    <!-- Quick Action -->
+    <section class="quick-action-card">
+      <h2 class="panel-title">Quick Action</h2>
+      <div class="quick-action-grid" id="quickActionGrid"><!-- Rendered by js/dashboard.js --></div>
+    </section>
+
+  </main>
+
+  <!-- Footer gets injected here by js/components.js -->
+  <div id="footer-placeholder"></div>
+
+<script src="js/components.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
