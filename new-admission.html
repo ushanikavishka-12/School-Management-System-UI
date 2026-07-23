@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>New Admission | Bright Future International School</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/dashboard.css" />
+<link rel="stylesheet" href="styles/forms.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body data-page="new-admission">
+
+  <div id="topbar-placeholder"></div>
+
+  <main class="form-page-body">
+
+    <a href="dashboard.html" class="page-back-link">← Back to Dashboard</a>
+
+    <div class="page-heading">
+      <div class="page-heading-title-row">
+        <div class="page-heading-icon">📄</div>
+        <div>
+          <h1>New Admission</h1>
+          <p>Submit a new admission application for review.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success confirmation -->
+    <div class="form-card success-panel" id="successPanel">
+      <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+      <h2>Application submitted</h2>
+      <p id="successName">—</p>
+      <p>Applicant will be contacted once the application is reviewed.</p>
+      <div class="admission-id" id="successAdmissionId">ADM-2026-0000</div>
+      <div class="success-actions">
+        <button class="btn btn-primary" id="newApplicationBtn"><i class="fa-solid fa-plus"></i> New Application</button>
+        <button class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Summary</button>
+        <a href="dashboard.html" class="btn btn-outline"><i class="fa-solid fa-house"></i> Back to Dashboard</a>
+      </div>
+    </div>
+
+    <form id="admissionForm" class="form-wrapper" novalidate>
+
+      <div class="form-card">
+        <h2 class="form-section-title"><i class="fa-solid fa-user"></i> Applicant Details</h2>
+        <p class="form-section-sub">Information about the student applying.</p>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="applicantName">Full Name<span class="required">*</span></label>
+            <input type="text" id="applicantName" class="form-input" placeholder="e.g. Sithara Kumarasinghe" required />
+            <span class="field-error" id="err-applicantName">Please enter the applicant's full name.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="applicantDob">Date of Birth<span class="required">*</span></label>
+            <input type="date" id="applicantDob" class="form-input" required />
+            <span class="field-error" id="err-applicantDob">Please select a date of birth.</span>
+          </div>
+
+          <div class="form-group">
+            <label>Gender</label>
+            <div class="segmented">
+              <input type="radio" name="admGender" id="admGenderMale" value="Male" checked />
+              <label for="admGenderMale">Male</label>
+              <input type="radio" name="admGender" id="admGenderFemale" value="Female" />
+              <label for="admGenderFemale">Female</label>
+              <input type="radio" name="admGender" id="admGenderOther" value="Other" />
+              <label for="admGenderOther">Other</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gradeApplying">Grade Applying For<span class="required">*</span></label>
+            <select id="gradeApplying" class="form-select" required>
+              <option value="">Select grade</option>
+              <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
+              <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
+              <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
+              <option>Grade 10</option><option>Grade 11</option>
+            </select>
+            <span class="field-error" id="err-gradeApplying">Please select a grade.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="intakeTerm">Intake Term</label>
+            <select id="intakeTerm" class="form-select">
+              <option>Term 1 — January</option>
+              <option>Term 2 — May</option>
+              <option>Term 3 — September</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="form-section-title"><i class="fa-solid fa-school"></i> Previous School (if any)</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="prevSchool">Previous School Name</label>
+            <input type="text" id="prevSchool" class="form-input" placeholder="e.g. Green Valley Primary" />
+          </div>
+          <div class="form-group">
+            <label for="prevGrade">Last Grade Completed</label>
+            <input type="text" id="prevGrade" class="form-input" placeholder="e.g. Grade 5" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="form-section-title"><i class="fa-solid fa-people-roof"></i> Parent / Guardian Details</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="admGuardianName">Guardian Full Name<span class="required">*</span></label>
+            <input type="text" id="admGuardianName" class="form-input" placeholder="e.g. Priya Kumarasinghe" required />
+            <span class="field-error" id="err-admGuardianName">Please enter the guardian's name.</span>
+          </div>
+          <div class="form-group">
+            <label for="admGuardianPhone">Phone Number<span class="required">*</span></label>
+            <input type="tel" id="admGuardianPhone" class="form-input" placeholder="e.g. 077 123 4567" required />
+            <span class="field-error" id="err-admGuardianPhone">Please enter a valid phone number.</span>
+          </div>
+          <div class="form-group full-width">
+            <label for="admGuardianEmail">Email Address<span class="required">*</span></label>
+            <input type="email" id="admGuardianEmail" class="form-input" placeholder="e.g. name@email.com" required />
+            <span class="field-error" id="err-admGuardianEmail">Please enter a valid email address.</span>
+          </div>
+          <div class="form-group full-width">
+            <label for="admAddress">Home Address</label>
+            <textarea id="admAddress" class="form-textarea" placeholder="Street, city, postal code"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="form-section-title"><i class="fa-solid fa-file-lines"></i> Required Documents</h2>
+        <p class="form-section-sub">Confirm which documents will be submitted with this application.</p>
+
+        <div class="check-row">
+          <input type="checkbox" id="docBirthCert" />
+          <label for="docBirthCert"><strong>Birth certificate</strong> — copy of the applicant's birth certificate</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="docReportCard" />
+          <label for="docReportCard"><strong>Previous school report</strong> — most recent academic report card</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="docPhotos" />
+          <label for="docPhotos"><strong>Passport photos</strong> — 2 recent passport-size photos</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="docMedical" />
+          <label for="docMedical"><strong>Medical record</strong> — vaccination and health record</label>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="check-row" style="border-bottom:none;">
+          <input type="checkbox" id="agreeTerms" required />
+          <label for="agreeTerms">I confirm the information provided is accurate and I agree to the school's <strong>admission terms and conditions</strong>.<span class="required">*</span></label>
+        </div>
+        <span class="field-error" id="err-agreeTerms" style="margin-left:26px;">You must agree to the admission terms to continue.</span>
+      </div>
+
+      <div class="form-actions">
+        <button type="reset" class="btn btn-outline" id="resetAdmBtn"><i class="fa-solid fa-rotate-left"></i> Clear Form</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit Application</button>
+      </div>
+    </form>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+<script src="js/components.js"></script>
+<script src="js/forms.js"></script>
+<script>
+  const admForm = document.getElementById('admissionForm');
+  const admSuccessPanel = document.getElementById('successPanel');
+
+  const admFields = {
+    applicantName: document.getElementById('applicantName'),
+    applicantDob: document.getElementById('applicantDob'),
+    gradeApplying: document.getElementById('gradeApplying'),
+    admGuardianName: document.getElementById('admGuardianName'),
+    admGuardianPhone: document.getElementById('admGuardianPhone'),
+    admGuardianEmail: document.getElementById('admGuardianEmail'),
+    agreeTerms: document.getElementById('agreeTerms'),
+  };
+
+  function setAdmError(key, show) {
+    admFields[key].classList.toggle('invalid', show);
+    const errEl = document.getElementById('err-' + key);
+    if (errEl) errEl.classList.toggle('show', show);
+  }
+
+  function isValidEmailAdm(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function isValidPhoneAdm(v) { return /^[0-9+()\s-]{7,}$/.test(v.trim()); }
+
+  function validateAdmission() {
+    let ok = true;
+    if (!admFields.applicantName.value.trim()) { setAdmError('applicantName', true); ok = false; } else setAdmError('applicantName', false);
+    if (!admFields.applicantDob.value) { setAdmError('applicantDob', true); ok = false; } else setAdmError('applicantDob', false);
+    if (!admFields.gradeApplying.value) { setAdmError('gradeApplying', true); ok = false; } else setAdmError('gradeApplying', false);
+    if (!admFields.admGuardianName.value.trim()) { setAdmError('admGuardianName', true); ok = false; } else setAdmError('admGuardianName', false);
+    if (!isValidPhoneAdm(admFields.admGuardianPhone.value)) { setAdmError('admGuardianPhone', true); ok = false; } else setAdmError('admGuardianPhone', false);
+    if (!isValidEmailAdm(admFields.admGuardianEmail.value)) { setAdmError('admGuardianEmail', true); ok = false; } else setAdmError('admGuardianEmail', false);
+    if (!admFields.agreeTerms.checked) { setAdmError('agreeTerms', true); ok = false; } else setAdmError('agreeTerms', false);
+    return ok;
+  }
+
+  admForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validateAdmission()) {
+      showToast('Please fix the highlighted fields.', 'error');
+      return;
+    }
+
+    const gender = document.querySelector('input[name="admGender"]:checked').value;
+    const admissionId = nextAdmissionId();
+
+    const application = {
+      admissionId,
+      name: admFields.applicantName.value.trim(),
+      dob: admFields.applicantDob.value,
+      gender,
+      gradeApplying: admFields.gradeApplying.value,
+      intakeTerm: document.getElementById('intakeTerm').value,
+      prevSchool: document.getElementById('prevSchool').value.trim(),
+      prevGrade: document.getElementById('prevGrade').value.trim(),
+      guardianName: admFields.admGuardianName.value.trim(),
+      guardianPhone: admFields.admGuardianPhone.value.trim(),
+      guardianEmail: admFields.admGuardianEmail.value.trim(),
+      address: document.getElementById('admAddress').value.trim(),
+      documents: {
+        birthCert: document.getElementById('docBirthCert').checked,
+        reportCard: document.getElementById('docReportCard').checked,
+        photos: document.getElementById('docPhotos').checked,
+        medical: document.getElementById('docMedical').checked,
+      },
+      status: 'Pending Review',
+      submittedAt: new Date().toISOString(),
+    };
+
+    const admissions = getAdmissions();
+    admissions.push(application);
+    saveAdmissions(admissions);
+
+    document.getElementById('successName').textContent = `${application.name} · Applying for ${application.gradeApplying}`;
+    document.getElementById('successAdmissionId').textContent = application.admissionId;
+
+    admForm.classList.add('hide');
+    admSuccessPanel.classList.add('show');
+    showToast('Application submitted successfully.');
+  });
+
+  document.getElementById('newApplicationBtn').addEventListener('click', function () {
+    admForm.reset();
+    document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+    document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
+    admSuccessPanel.classList.remove('show');
+    admForm.classList.remove('hide');
+    admFields.applicantName.focus();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Take Attendance | Bright Future International School</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/dashboard.css" />
+<link rel="stylesheet" href="styles/forms.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body data-page="take-attendance">
+
+  <div id="topbar-placeholder"></div>
+
+  <main class="form-page-body">
+
+    <a href="dashboard.html" class="page-back-link">← Back to Dashboard</a>
+
+    <div class="page-heading">
+      <div class="page-heading-title-row">
+        <div class="page-heading-icon">✅</div>
+        <div>
+          <h1>Take Attendance</h1>
+          <p>Select a class and date, then mark each student.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-grid cols-3">
+        <div class="form-group">
+          <label for="classSelect">Class</label>
+          <select id="classSelect" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="sectionSelect">Section</label>
+          <select id="sectionSelect" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="dateSelect">Date</label>
+          <input type="date" id="dateSelect" class="form-input" />
+        </div>
+      </div>
+    </div>
+
+    <div class="chip-row">
+      <div class="chip chip-blue"><div><span class="chip-value" id="countTotal">0</span><span class="chip-label">Total</span></div></div>
+      <div class="chip chip-green"><div><span class="chip-value" id="countPresent">0</span><span class="chip-label">Present</span></div></div>
+      <div class="chip chip-red"><div><span class="chip-value" id="countAbsent">0</span><span class="chip-label">Absent</span></div></div>
+      <div class="chip chip-orange"><div><span class="chip-value" id="countLate">0</span><span class="chip-label">Late</span></div></div>
+    </div>
+
+    <div class="form-card">
+      <div class="panel-header" style="margin-bottom: 12px;">
+        <h2 class="form-section-title" style="margin:0;"><i class="fa-solid fa-list-check"></i> Student List</h2>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline btn-sm" id="markAllPresentBtn"><i class="fa-solid fa-check-double"></i> Mark All Present</button>
+        </div>
+      </div>
+
+      <div class="attendance-list" id="attendanceList">
+        <!-- Rendered by script -->
+      </div>
+
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="fa-solid fa-user-slash"></i>
+        No students found for this class and section yet.<br />
+        Add students first from the <a href="add-student.html">Add Student</a> page.
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" id="saveAttendanceBtn"><i class="fa-solid fa-floppy-disk"></i> Save Attendance</button>
+    </div>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+<script src="js/components.js"></script>
+<script src="js/forms.js"></script>
+<script>
+  const classSelect = document.getElementById('classSelect');
+  const sectionSelect = document.getElementById('sectionSelect');
+  const dateSelect = document.getElementById('dateSelect');
+  const listEl = document.getElementById('attendanceList');
+  const emptyState = document.getElementById('emptyState');
+
+  let currentStatuses = {}; // studentId -> 'present' | 'absent' | 'late'
+
+  function uniqueSorted(arr) { return [...new Set(arr)].sort(); }
+
+  function populateFilters() {
+    const students = getStudents();
+    const classes = uniqueSorted(students.map(s => s.className));
+    classSelect.innerHTML = classes.map(c => `<option value="${c}">${c}</option>`).join('');
+    populateSections();
+  }
+
+  function populateSections() {
+    const students = getStudents();
+    const sections = uniqueSorted(
+      students.filter(s => s.className === classSelect.value).map(s => s.section)
+    );
+    sectionSelect.innerHTML = sections.map(s => `<option value="${s}">${s}</option>`).join('');
+  }
+
+  function attendanceKey() {
+    return `${dateSelect.value}__${classSelect.value}__${sectionSelect.value}`;
+  }
+
+  function loadExistingAttendance() {
+    const all = getAttendance();
+    const record = all[attendanceKey()];
+    currentStatuses = {};
+    if (record) {
+      record.forEach(r => { currentStatuses[r.studentId] = r.status; });
+    }
+  }
+
+  function renderList() {
+    loadExistingAttendance();
+    const students = getStudents().filter(
+      s => s.className === classSelect.value && s.section === sectionSelect.value
+    );
+
+    if (students.length === 0) {
+      listEl.innerHTML = '';
+      emptyState.style.display = 'block';
+      updateCounts([]);
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    listEl.innerHTML = students.map(s => {
+      const status = currentStatuses[s.id] || 'present';
+      return `
+        <div class="attendance-row" data-student-id="${s.id}">
+          <div class="student-identity">
+            <div class="student-avatar">${initials(s.name)}</div>
+            <div>
+              <div class="student-name">${s.name}</div>
+              <div class="student-meta">${s.id} · ${s.className} ${s.section}</div>
+            </div>
+          </div>
+          <div class="status-group" data-student-id="${s.id}">
+            <button type="button" data-status="present" class="${status === 'present' ? 'active-present' : ''}">Present</button>
+            <button type="button" data-status="late" class="${status === 'late' ? 'active-late' : ''}">Late</button>
+            <button type="button" data-status="absent" class="${status === 'absent' ? 'active-absent' : ''}">Absent</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    students.forEach(s => { if (!currentStatuses[s.id]) currentStatuses[s.id] = 'present'; });
+    updateCounts(students);
+  }
+
+  function updateCounts(students) {
+    const total = students.length;
+    let present = 0, absent = 0, late = 0;
+    students.forEach(s => {
+      const st = currentStatuses[s.id] || 'present';
+      if (st === 'present') present++;
+      else if (st === 'absent') absent++;
+      else if (st === 'late') late++;
+    });
+    document.getElementById('countTotal').textContent = total;
+    document.getElementById('countPresent').textContent = present;
+    document.getElementById('countAbsent').textContent = absent;
+    document.getElementById('countLate').textContent = late;
+  }
+
+  listEl.addEventListener('click', function (e) {
+    const btn = e.target.closest('button[data-status]');
+    if (!btn) return;
+    const group = btn.closest('.status-group');
+    const studentId = group.dataset.studentId;
+    const status = btn.dataset.status;
+    currentStatuses[studentId] = status;
+
+    group.querySelectorAll('button').forEach(b => {
+      b.className = '';
+    });
+    btn.className = status === 'present' ? 'active-present' : status === 'absent' ? 'active-absent' : 'active-late';
+
+    const students = getStudents().filter(
+      s => s.className === classSelect.value && s.section === sectionSelect.value
+    );
+    updateCounts(students);
+  });
+
+  document.getElementById('markAllPresentBtn').addEventListener('click', function () {
+    const students = getStudents().filter(
+      s => s.className === classSelect.value && s.section === sectionSelect.value
+    );
+    students.forEach(s => { currentStatuses[s.id] = 'present'; });
+    renderListPreservingStatuses();
+    updateCounts(students);
+    showToast('All students marked present.');
+  });
+
+  function renderListPreservingStatuses() {
+    const students = getStudents().filter(
+      s => s.className === classSelect.value && s.section === sectionSelect.value
+    );
+    listEl.innerHTML = students.map(s => {
+      const status = currentStatuses[s.id] || 'present';
+      return `
+        <div class="attendance-row" data-student-id="${s.id}">
+          <div class="student-identity">
+            <div class="student-avatar">${initials(s.name)}</div>
+            <div>
+              <div class="student-name">${s.name}</div>
+              <div class="student-meta">${s.id} · ${s.className} ${s.section}</div>
+            </div>
+          </div>
+          <div class="status-group" data-student-id="${s.id}">
+            <button type="button" data-status="present" class="${status === 'present' ? 'active-present' : ''}">Present</button>
+            <button type="button" data-status="late" class="${status === 'late' ? 'active-late' : ''}">Late</button>
+            <button type="button" data-status="absent" class="${status === 'absent' ? 'active-absent' : ''}">Absent</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('saveAttendanceBtn').addEventListener('click', function () {
+    const students = getStudents().filter(
+      s => s.className === classSelect.value && s.section === sectionSelect.value
+    );
+    if (students.length === 0) {
+      showToast('No students to save attendance for.', 'error');
+      return;
+    }
+    const record = students.map(s => ({ studentId: s.id, status: currentStatuses[s.id] || 'present' }));
+    const all = getAttendance();
+    all[attendanceKey()] = record;
+    saveAttendance(all);
+    showToast(`Attendance saved for ${classSelect.value} ${sectionSelect.value} on ${dateSelect.value}.`);
+  });
+
+  classSelect.addEventListener('change', function () { populateSections(); renderList(); });
+  sectionSelect.addEventListener('change', renderList);
+  dateSelect.addEventListener('change', renderList);
+
+  // Init
+  dateSelect.value = todayISO();
+  populateFilters();
+  renderList();
+</script>
+</body>
+</html>

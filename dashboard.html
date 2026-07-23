@@ -24,6 +24,7 @@
 
     <!-- Welcome banner -->
     <section class="welcome-banner">
+
       <div class="welcome-text">
         <span class="welcome-eyebrow">Welcome back</span>
         <h1 class="welcome-name">Principal Saara</h1>
@@ -32,15 +33,17 @@
         <div class="welcome-date">📅 <span id="todayDate">June 21, 2026</span></div>
 
         <div class="welcome-actions">
-          <button class="welcome-btn btn-blue" onclick="handleQuickAction('Add Student')">➕ Add Student</button>
-          <button class="welcome-btn btn-green" onclick="handleQuickAction('Take Attendance')">✅ Take Attendance</button>
-          <button class="welcome-btn btn-outline-orange" onclick="handleQuickAction('New Admission')">📄 New Admission</button>
+          <a href="add-student.html" class="welcome-btn btn-blue">➕ Add Student</a>
+          <a href="take-attendance.html" class="welcome-btn btn-green">✅ Take Attendance</a>
+          <a href="new-admission.html" class="welcome-btn btn-yellow">📄 New Admission</a>
         </div>
       </div>
 
-      <!-- Save a classroom photo as images/classroom.jpg -->
-      <img class="welcome-photo" src="images/school .jpeg" alt="School Classroom"
-           onerror="this.style.display='none';" />
+      <!-- Save a classroom photo as images/school.jpeg -->
+      <div class="welcome-photo-wrap">
+        <img class="welcome-photo" src="images/school.jpeg" alt="School Classroom"
+             onerror="this.style.display='none';" />
+      </div>
     </section>
 
     <!-- Stat cards -->

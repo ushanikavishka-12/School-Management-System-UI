@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add Student | Bright Future International School</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/dashboard.css" />
+<link rel="stylesheet" href="styles/forms.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body data-page="add-student">
+
+  <div id="topbar-placeholder"></div>
+
+  <main class="form-page-body">
+
+    <a href="dashboard.html" class="page-back-link">← Back to Dashboard</a>
+
+    <div class="page-heading">
+      <div class="page-heading-title-row">
+        <div class="page-heading-icon">🎓</div>
+        <div>
+          <h1>Add Student</h1>
+          <p>Enter the student's details to create a new record.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success confirmation, hidden until a save succeeds -->
+    <div class="form-card success-panel" id="successPanel">
+      <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+      <h2>Student added successfully</h2>
+      <p id="successName">—</p>
+      <div class="admission-id" id="successStudentId">STU-0000</div>
+      <div class="success-actions">
+        <button class="btn btn-primary" id="addAnotherBtn"><i class="fa-solid fa-plus"></i> Add Another Student</button>
+        <a href="dashboard.html" class="btn btn-outline"><i class="fa-solid fa-house"></i> Back to Dashboard</a>
+      </div>
+    </div>
+
+    <form id="addStudentForm" class="form-wrapper" novalidate>
+
+      <div class="form-card">
+        <h2 class="form-section-title"><i class="fa-solid fa-user"></i> Student Information</h2>
+        <p class="form-section-sub">Basic details about the student.</p>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="fullName">Full Name<span class="required">*</span></label>
+            <input type="text" id="fullName" class="form-input" placeholder="e.g. Ashan Perera" required />
+            <span class="field-error" id="err-fullName">Please enter the student's full name.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="dob">Date of Birth<span class="required">*</span></label>
+            <input type="date" id="dob" class="form-input" required />
+            <span class="field-error" id="err-dob">Please select a date of birth.</span>
+          </div>
+
+          <div class="form-group">
+            <label>Gender<span class="required">*</span></label>
+            <div class="segmented" id="genderGroup">
+              <input type="radio" name="gender" id="genderMale" value="Male" checked />
+              <label for="genderMale">Male</label>
+              <input type="radio" name="gender" id="genderFemale" value="Female" />
+              <label for="genderFemale">Female</label>
+              <input type="radio" name="gender" id="genderOther" value="Other" />
+              <label for="genderOther">Other</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="className">Class<span class="required">*</span></label>
+            <select id="className" class="form-select" required>
+              <option value="">Select class</option>
+              <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option>
+              <option>Grade 4</option><option>Grade 5</option><option>Grade 6</option>
+              <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option>
+              <option>Grade 10</option><option>Grade 11</option>
+            </select>
+            <span class="field-error" id="err-className">Please select a class.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="section">Section<span class="required">*</span></label>
+            <select id="section" class="form-select" required>
+              <option value="">Select section</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option>
+            </select>
+            <span class="field-error" id="err-section">Please select a section.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="form-section-title"><i class="fa-solid fa-people-roof"></i> Guardian Information</h2>
+        <p class="form-section-sub">Primary contact for this student.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="guardianName">Guardian Full Name<span class="required">*</span></label>
+            <input type="text" id="guardianName" class="form-input" placeholder="e.g. Nimal Perera" required />
+            <span class="field-error" id="err-guardianName">Please enter the guardian's name.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="guardianPhone">Guardian Phone Number<span class="required">*</span></label>
+            <input type="tel" id="guardianPhone" class="form-input" placeholder="e.g. 077 123 4567" required />
+            <span class="field-error" id="err-guardianPhone">Please enter a valid phone number.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="guardianEmail">Guardian Email</label>
+            <input type="email" id="guardianEmail" class="form-input" placeholder="e.g. name@email.com" />
+            <span class="field-error" id="err-guardianEmail">Please enter a valid email address.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="admissionDate">Admission Date</label>
+            <input type="date" id="admissionDate" class="form-input" />
+          </div>
+
+          <div class="form-group full-width">
+            <label for="address">Home Address</label>
+            <textarea id="address" class="form-textarea" placeholder="Street, city, postal code"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="reset" class="btn btn-outline" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Clear Form</button>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Student</button>
+      </div>
+    </form>
+
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+<script src="js/components.js"></script>
+<script src="js/forms.js"></script>
+<script>
+  const form = document.getElementById('addStudentForm');
+  const successPanel = document.getElementById('successPanel');
+
+  const fields = {
+    fullName: document.getElementById('fullName'),
+    dob: document.getElementById('dob'),
+    className: document.getElementById('className'),
+    section: document.getElementById('section'),
+    guardianName: document.getElementById('guardianName'),
+    guardianPhone: document.getElementById('guardianPhone'),
+    guardianEmail: document.getElementById('guardianEmail'),
+  };
+
+  function setError(key, show) {
+    fields[key].classList.toggle('invalid', show);
+    const errEl = document.getElementById('err-' + key);
+    if (errEl) errEl.classList.toggle('show', show);
+  }
+
+  function isValidEmail(v) { return v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function isValidPhone(v) { return /^[0-9+()\s-]{7,}$/.test(v.trim()); }
+
+  function validate() {
+    let ok = true;
+    if (!fields.fullName.value.trim()) { setError('fullName', true); ok = false; } else setError('fullName', false);
+    if (!fields.dob.value) { setError('dob', true); ok = false; } else setError('dob', false);
+    if (!fields.className.value) { setError('className', true); ok = false; } else setError('className', false);
+    if (!fields.section.value) { setError('section', true); ok = false; } else setError('section', false);
+    if (!fields.guardianName.value.trim()) { setError('guardianName', true); ok = false; } else setError('guardianName', false);
+    if (!isValidPhone(fields.guardianPhone.value)) { setError('guardianPhone', true); ok = false; } else setError('guardianPhone', false);
+    if (!isValidEmail(fields.guardianEmail.value)) { setError('guardianEmail', true); ok = false; } else setError('guardianEmail', false);
+    return ok;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) {
+      showToast('Please fix the highlighted fields.', 'error');
+      return;
+    }
+
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    const student = {
+      id: nextStudentId(),
+      name: fields.fullName.value.trim(),
+      dob: fields.dob.value,
+      gender: gender,
+      className: fields.className.value,
+      section: fields.section.value,
+      guardianName: fields.guardianName.value.trim(),
+      guardianPhone: fields.guardianPhone.value.trim(),
+      guardianEmail: fields.guardianEmail.value.trim(),
+      address: document.getElementById('address').value.trim(),
+      admissionDate: document.getElementById('admissionDate').value || todayISO(),
+    };
+
+    const students = getStudents();
+    students.push(student);
+    saveStudents(students);
+
+    document.getElementById('successName').textContent = `${student.name} · ${student.className} ${student.section}`;
+    document.getElementById('successStudentId').textContent = student.id;
+
+    form.classList.add('hide');
+    successPanel.classList.add('show');
+    showToast('Student saved successfully.');
+  });
+
+  document.getElementById('addAnotherBtn').addEventListener('click', function () {
+    form.reset();
+    document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+    document.querySelectorAll('.field-error.show').forEach(el => el.classList.remove('show'));
+    successPanel.classList.remove('show');
+    form.classList.remove('hide');
+    fields.fullName.focus();
+  });
+</script>
+</body>
+</html>
