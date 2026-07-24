@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Students - School Management System</title>
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/students.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body data-page="students">
+
+  <div id="topbar-placeholder"></div>
+
+  <div class="page-wrapper">
+
+    <!-- ===== Header Banner ===== -->
+    <div class="students-banner">
+      <div class="banner-left">
+        <div class="breadcrumb">Home &gt; Students</div>
+        <h1>Students</h1>
+        <p>Manage student information, track enrollment, and monitor academic progress</p>
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Search students by name, ID or email...">
+        </div>
+      </div>
+      <div class="banner-right">
+        <img src="images/students-banner.jpg" alt="Students" onerror="this.style.display='none'">
+        <button class="btn-add-student" id="openAddStudentBtn">
+          <i class="fa-solid fa-plus"></i> Add New Student
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== Stat Cards ===== -->
+    <div class="stats-row">
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">TOTAL STUDENT</span>
+          <span class="stat-value" id="statTotal">0</span>
+          <span class="stat-change up" id="statTotalChange">+0%</span>
+        </div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon"><i class="fa-solid fa-file-circle-plus"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">NEW ADMISSIONS</span>
+          <span class="stat-value" id="statNew">0</span>
+          <span class="stat-change up" id="statNewChange">+0%</span>
+        </div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-icon"><i class="fa-solid fa-person"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">MALE STUDENTS</span>
+          <span class="stat-value" id="statMale">0</span>
+          <span class="stat-change" id="statMaleChange">0%</span>
+        </div>
+      </div>
+      <div class="stat-card pink">
+        <div class="stat-icon"><i class="fa-solid fa-person-dress"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">FEMALE STUDENTS</span>
+          <span class="stat-value" id="statFemale">0</span>
+          <span class="stat-change" id="statFemaleChange">0%</span>
+        </div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">ACTIVE STUDENTS</span>
+          <span class="stat-value" id="statActive">0%</span>
+          <span class="stat-change up" id="statActiveChange">+0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Table Section ===== -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2>All Students</h2>
+        <div class="table-filters">
+          <select id="classFilter">
+            <option value="">All Classes</option>
+          </select>
+          <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+          <button class="btn-filters"><i class="fa-solid fa-filter"></i> Filters</button>
+          <button class="btn-export"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>Class</th>
+              <th>Date of Birth</th>
+              <th>Gender</th>
+              <th>Parent/Guardian</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+            <!-- Rows injected by js/students.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="showingText">Showing 0 to 0 of 0 students</span>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- ===== Add New Student Modal ===== -->
+  <div class="modal-overlay" id="addStudentModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Add New Student</h2>
+        <button class="modal-close" id="closeAddStudentBtn">&times;</button>
+      </div>
+
+      <form id="addStudentForm">
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Student Name *</label>
+            <input type="text" id="fName" required placeholder="e.g. Sudam Fernando">
+          </div>
+          <div class="form-field">
+            <label>Email</label>
+            <input type="email" id="fEmail" placeholder="e.g. sudam@edu.lk">
+          </div>
+          <div class="form-field">
+            <label>Class *</label>
+            <input type="text" id="fClass" required placeholder="e.g. 8A">
+          </div>
+          <div class="form-field">
+            <label>Date of Birth *</label>
+            <input type="date" id="fDob" required>
+          </div>
+          <div class="form-field">
+            <label>Gender *</label>
+            <select id="fGender" required>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Status *</label>
+            <select id="fStatus" required>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Parent/Guardian Name *</label>
+            <input type="text" id="fParentName" required placeholder="e.g. Mahesh Induwara">
+          </div>
+          <div class="form-field">
+            <label>Parent/Guardian Contact *</label>
+            <input type="text" id="fParentContact" required placeholder="e.g. 077 4587 517">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="cancelAddStudentBtn">Cancel</button>
+          <button type="submit" class="btn-submit">Add Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="js/components.js"></script>
+  <script src="js/students.js"></script>
+</body>
+</html>
