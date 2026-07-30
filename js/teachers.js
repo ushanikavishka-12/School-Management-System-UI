@@ -93,14 +93,14 @@ function populateFilterDropdowns() {
   });
 }
 
-/* ---------------- Table rendering ---------------- */
-function renderTeachersTable() {
+/* ---------------- Shared filter logic (used by table render + export) ---------------- */
+function getFilteredTeachers() {
   const searchTerm = document.getElementById("tableSearch").value.trim().toLowerCase();
   const subjectValue = document.getElementById("subjectFilter").value;
   const departmentValue = document.getElementById("departmentFilter").value;
   const statusValue = document.getElementById("statusFilter").value;
 
-  const filtered = teachersData.filter((t) => {
+  return teachersData.filter((t) => {
     const matchesSearch =
       searchTerm === "" ||
       t.name.toLowerCase().includes(searchTerm) ||
@@ -111,6 +111,11 @@ function renderTeachersTable() {
     const matchesStatus = statusValue === "all" || t.status === statusValue;
     return matchesSearch && matchesSubject && matchesDepartment && matchesStatus;
   });
+}
+
+/* ---------------- Table rendering ---------------- */
+function renderTeachersTable() {
+  const filtered = getFilteredTeachers();
 
   const tbody = document.getElementById("teachersTableBody");
   tbody.innerHTML = "";
@@ -161,6 +166,57 @@ function renderTeachersTable() {
 function viewTeacher(id) { console.log("View teacher", id); }
 function editTeacher(id) { console.log("Edit teacher", id); }
 function moreOptions(id) { console.log("More options for", id); }
+
+/* ---------------- Export to CSV ---------------- */
+// Exports whatever the table is currently showing (respects search + filters).
+// Downloads a CSV file the user can open directly in Excel / Google Sheets.
+function csvEscape(value) {
+  const str = String(value ?? "");
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
+function teachersToCSV(rows) {
+  const headers = [
+    "Teacher ID", "Teacher Name", "Role", "Email", "Phone",
+    "Subject", "Department", "Classes", "Experience (Years)", "Status"
+  ];
+  const lines = [headers.map(csvEscape).join(",")];
+
+  rows.forEach((t) => {
+    lines.push([
+      t.id, t.name, t.role, t.email, t.phone,
+      t.subject, t.department, t.classes, t.experience, t.status
+    ].map(csvEscape).join(","));
+  });
+
+  return lines.join("\r\n");
+}
+
+function exportTeachersToCSV() {
+  const filtered = getFilteredTeachers();
+
+  if (filtered.length === 0) {
+    alert("There are no teachers to export with the current search/filters.");
+    return;
+  }
+
+  const csvContent = teachersToCSV(filtered);
+  const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const dateStamp = new Date().toISOString().slice(0, 10);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `teachers-export-${dateStamp}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  // This is where you'd instead call a real export API if the backend
+  // generates the file server-side, e.g.:
+  // window.location.href = "/api/teachers/export?format=csv";
+}
 
 /* ---------------- Add Teacher modal ---------------- */
 function openAddTeacherModal() {
@@ -242,6 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closeAddTeacherBtn").addEventListener("click", closeAddTeacherModal);
   document.getElementById("cancelAddTeacherBtn").addEventListener("click", closeAddTeacherModal);
   document.getElementById("addTeacherForm").addEventListener("submit", handleAddTeacherSubmit);
+
+  document.getElementById("exportBtn").addEventListener("click", exportTeachersToCSV);
 
   document.getElementById("addTeacherOverlay").addEventListener("click", (e) => {
     if (e.target.id === "addTeacherOverlay") closeAddTeacherModal();
