@@ -68,8 +68,8 @@
 
 .banner-photo {
   width: 42%;
-  max-width: 420px;
-  height: 150px;
+  max-width: 620px;
+  height: 300px;
   object-fit: cover;
   border-radius: 14px;
   z-index: 1;
@@ -77,9 +77,9 @@
 
 .add-class-btn {
   position: absolute;
-  top: 24px;
+  top: 27px;
   right: 32px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(102, 15, 143, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.4);
   color: #fff;
   font-size: 13px;
