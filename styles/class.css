@@ -265,6 +265,7 @@
   display: flex;
   gap: 10px;
   color: #A9ABB6;
+  position: relative;
 }
 
 .row-actions button {
@@ -277,6 +278,52 @@
 }
 
 .row-actions button:hover { color: #1E1B2E; }
+
+.actions-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 130px;
+  background: #fff;
+  border: 1px solid #E7E7EF;
+  border-radius: 10px;
+  box-shadow: 0 8px 22px rgba(20, 20, 43, 0.12);
+  display: none;
+  flex-direction: column;
+  padding: 6px;
+  z-index: 15;
+}
+
+.actions-menu.open {
+  display: flex;
+}
+
+.actions-menu button {
+  border: none;
+  background: transparent;
+  color: #4B4D5A;
+  font-size: 12.5px;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions-menu button:hover {
+  background: #F5F6FA;
+  color: #1E1B2E;
+}
+
+.actions-menu button.danger {
+  color: #CC2F45;
+}
+
+.actions-menu button.danger:hover {
+  background: #FEECEF;
+}
 
 /* ---------- Table footer / pagination ---------- */
 .table-footer {

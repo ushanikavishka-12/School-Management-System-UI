@@ -13,6 +13,8 @@ let classesData = [
   { className: "Grade 7E", teacher: "Mrs. Shalani Vithanage", section: "G 7 Section", students: 132, roomNo: "Block 2, Rm 14", status: "Active" }
 ];
 
+let openActionMenuIndex = null;
+
 // Figures shown in the stat cards reflect the full school-wide totals from
 // the design (42 classes, 128 sections, etc.), separate from the 4 sample
 // rows in classesData. Swap these for real aggregated values once you're
@@ -76,13 +78,15 @@ function refreshFilterDropdowns() {
 }
 
 /* ---------------- Table rendering ---------------- */
-function renderClassesTable() {
+function getFilteredClasses() {
   const searchTerm = document.getElementById("tableSearch").value.trim().toLowerCase();
   const teacherValue = document.getElementById("teacherFilter").value;
   const roomValue = document.getElementById("roomFilter").value;
   const statusValue = document.getElementById("statusFilter").value;
 
-  const filtered = classesData.filter((c) => {
+  return classesData
+    .map((c, sourceIndex) => ({ c, sourceIndex }))
+    .filter(({ c }) => {
     const matchesSearch =
       searchTerm === "" ||
       c.className.toLowerCase().includes(searchTerm) ||
@@ -92,6 +96,11 @@ function renderClassesTable() {
     const matchesStatus = statusValue === "all" || c.status === statusValue;
     return matchesSearch && matchesTeacher && matchesRoom && matchesStatus;
   });
+}
+
+/* ---------------- Table rendering ---------------- */
+function renderClassesTable() {
+  const filtered = getFilteredClasses();
 
   const tbody = document.getElementById("classesTableBody");
   tbody.innerHTML = "";
@@ -102,7 +111,7 @@ function renderClassesTable() {
         No classes match your search.
       </td></tr>`;
   } else {
-    filtered.forEach((c, index) => {
+    filtered.forEach(({ c, sourceIndex }) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>
@@ -118,8 +127,12 @@ function renderClassesTable() {
         <td><span class="status-badge status-${c.status.toLowerCase()}">${c.status}</span></td>
         <td>
           <div class="row-actions">
-            <button title="View" onclick="viewClass(${index})"><i class="fa-solid fa-eye"></i></button>
-            <button title="More" onclick="moreOptions(${index})"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            <button title="View" onclick="viewClass(${sourceIndex})"><i class="fa-solid fa-eye"></i></button>
+            <button title="More" onclick="toggleRowMenu(event, ${sourceIndex})"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            <div class="actions-menu ${openActionMenuIndex === sourceIndex ? "open" : ""}">
+              <button type="button" onclick="editClass(${sourceIndex})"><i class="fa-solid fa-pen"></i> Edit</button>
+              <button type="button" class="danger" onclick="deleteClass(${sourceIndex})"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
           </div>
         </td>
       `;
@@ -131,9 +144,145 @@ function renderClassesTable() {
     `Showing 1 to ${filtered.length} of ${classesData.length} classes`;
 }
 
-/* ---------------- Row action placeholders ---------------- */
-function viewClass(index) { console.log("View class", classesData[index]); }
-function moreOptions(index) { console.log("More options for", classesData[index]); }
+/* ---------------- Row actions ---------------- */
+function viewClass(index) {
+  const row = classesData[index];
+  if (!row) return;
+
+  alert(
+    [
+      `Class: ${row.className}`,
+      `Teacher: ${row.teacher}`,
+      `Section: ${row.section}`,
+      `Students: ${row.students}`,
+      `Room No: ${row.roomNo}`,
+      `Status: ${row.status}`
+    ].join("\n")
+  );
+}
+
+function toggleRowMenu(event, index) {
+  event.stopPropagation();
+  openActionMenuIndex = openActionMenuIndex === index ? null : index;
+  renderClassesTable();
+}
+
+function editClass(index) {
+  const row = classesData[index];
+  if (!row) return;
+
+  const nextClassName = prompt("Edit Class Name", row.className);
+  if (nextClassName === null) return;
+
+  const nextTeacher = prompt("Edit Class Teacher", row.teacher);
+  if (nextTeacher === null) return;
+
+  const nextSection = prompt("Edit Section", row.section);
+  if (nextSection === null) return;
+
+  const nextStudents = prompt("Edit Students Count", String(row.students));
+  if (nextStudents === null) return;
+
+  const nextRoomNo = prompt("Edit Room No", row.roomNo);
+  if (nextRoomNo === null) return;
+
+  const nextStatus = prompt("Edit Status (Active or Full)", row.status);
+  if (nextStatus === null) return;
+
+  const className = nextClassName.trim();
+  const teacher = nextTeacher.trim();
+  const section = nextSection.trim();
+  const roomNo = nextRoomNo.trim();
+  const status = nextStatus.trim();
+  const students = Number(nextStudents);
+
+  if (!className || !teacher || !section || !roomNo || !status) {
+    alert("All fields are required.");
+    return;
+  }
+
+  if (!Number.isFinite(students) || students < 0) {
+    alert("Students count must be a valid non-negative number.");
+    return;
+  }
+
+  if (!["Active", "Full"].includes(status)) {
+    alert("Status must be either Active or Full.");
+    return;
+  }
+
+  row.className = className;
+  row.teacher = teacher;
+  row.section = section;
+  row.students = students;
+  row.roomNo = roomNo;
+  row.status = status;
+
+  openActionMenuIndex = null;
+  refreshFilterDropdowns();
+  renderClassesTable();
+  renderStats();
+}
+
+function deleteClass(index) {
+  const row = classesData[index];
+  if (!row) return;
+
+  const ok = confirm(`Delete ${row.className}? This cannot be undone.`);
+  if (!ok) return;
+
+  classesData.splice(index, 1);
+  openActionMenuIndex = null;
+  refreshFilterDropdowns();
+  renderClassesTable();
+  renderStats();
+}
+
+/* ---------------- Export to CSV ---------------- */
+function csvEscape(value) {
+  const str = String(value ?? "");
+  return `"${str.replace(/"/g, '""')}"`;
+}
+
+function classesToCSV(rows) {
+  const headers = ["Class", "Class Teacher", "Sections", "Students", "Room No", "Status"];
+  const lines = [headers.map(csvEscape).join(",")];
+
+  rows.forEach(({ c }) => {
+    lines.push([
+      c.className,
+      c.teacher,
+      c.section,
+      c.students,
+      c.roomNo,
+      c.status
+    ].map(csvEscape).join(","));
+  });
+
+  return lines.join("\r\n");
+}
+
+function exportClassesToCSV() {
+  const filtered = getFilteredClasses();
+
+  if (filtered.length === 0) {
+    alert("There are no classes to export with the current search/filters.");
+    return;
+  }
+
+  const csvContent = classesToCSV(filtered);
+  const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const dateStamp = new Date().toISOString().slice(0, 10);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `classes-export-${dateStamp}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 /* ---------------- Add Class modal ---------------- */
 function openAddClassModal() {
@@ -204,7 +353,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("addClassOverlay").addEventListener("click", (e) => {
     if (e.target.id === "addClassOverlay") closeAddClassModal();
   });
+
+  document.getElementById("exportBtn").addEventListener("click", exportClassesToCSV);
+
+  document.addEventListener("click", () => {
+    if (openActionMenuIndex !== null) {
+      openActionMenuIndex = null;
+      renderClassesTable();
+    }
+  });
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeAddClassModal();
+    if (e.key === "Escape") {
+      closeAddClassModal();
+      if (openActionMenuIndex !== null) {
+        openActionMenuIndex = null;
+        renderClassesTable();
+      }
+    }
   });
 });
