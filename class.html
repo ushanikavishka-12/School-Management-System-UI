@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Classes | School Management System</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/class.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Topbar gets injected here by js/components.js -->
+  <div id="topbar-placeholder"></div>
+
+  <main class="page-body">
+
+    <!-- Purple header banner -->
+    <section class="classes-banner">
+      <div class="banner-text">
+        <span class="banner-breadcrumb">Home &gt; Classes</span>
+        <h1 class="banner-title">Classes</h1>
+        <p class="banner-subtitle">Organize class groups, assign teachers and rooms, and keep track of enrollment across every grade and section.</p>
+
+        <div class="banner-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="tableSearch" placeholder="Search classes by name, grade..." />
+        </div>
+      </div>
+
+      <!-- Save a classroom photo as images/classes-banner.jpg -->
+      <img class="banner-photo" src="images/classes-banner.jpg" alt="Classroom"
+           onerror="this.style.display='none';" />
+
+      <button class="add-class-btn" id="openAddClassBtn">
+        <i class="fa-solid fa-square-plus"></i> Add New Class
+      </button>
+    </section>
+
+    <!-- Stat cards -->
+    <section class="stats-grid">
+      <div class="stat-card stat-blue">
+        <div class="stat-icon"><i class="fa-solid fa-house"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Total Classes</span>
+          <span class="stat-value" id="statTotal">-</span>
+          <span class="stat-trend up">↑ 12.5%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-icon"><i class="fa-solid fa-plus"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">New Sections</span>
+          <span class="stat-value" id="statNewSections">-</span>
+          <span class="stat-trend up">↑ 5.4%</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-orange">
+        <div class="stat-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Total Sections</span>
+          <span class="stat-value" id="statTotalSections">-</span>
+          <span class="stat-trend neutral" id="statAvgSections">Avg 3 / class</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-pink">
+        <div class="stat-icon"><i class="fa-solid fa-people-group"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Avg Class Size</span>
+          <span class="stat-value" id="statAvgClassSize">-</span>
+          <span class="stat-trend neutral">students / class</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-teal">
+        <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Active Classes</span>
+          <span class="stat-value" id="statActivePct">-</span>
+          <span class="stat-trend up">↑ 1.2%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table card -->
+    <section class="table-card">
+      <div class="table-toolbar">
+        <h2 class="table-title">All Classes</h2>
+
+        <div class="table-filters">
+          <select id="teacherFilter" class="filter-select">
+            <option value="all">All Teachers</option>
+          </select>
+          <select id="roomFilter" class="filter-select">
+            <option value="all">All Room No</option>
+          </select>
+          <select id="statusFilter" class="filter-select">
+            <option value="all">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Full">Full</option>
+          </select>
+          <button class="filters-btn"><i class="fa-solid fa-filter"></i> Filters</button>
+          <button class="export-btn" id="exportBtn"><i class="fa-solid fa-download"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="classes-table">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Class Teacher</th>
+              <th>Sections</th>
+              <th>Students</th>
+              <th>Room No</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="classesTableBody"><!-- Rendered by js/classes.js --></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="paginationSummary">Showing 1 to 4 classes</span>
+        <div class="pagination">
+          <button class="page-nav" id="prevPage">&lt;</button>
+          <button class="page-number active">1</button>
+          <button class="page-nav" id="nextPage">&gt;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer gets injected here by js/components.js -->
+  <div id="footer-placeholder"></div>
+
+  <!-- ================= Add Class Modal ================= -->
+  <div class="modal-overlay" id="addClassOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Add New Class</h2>
+        <button class="modal-close" id="closeAddClassBtn">✕</button>
+      </div>
+
+      <form id="addClassForm" novalidate>
+        <div class="form-group">
+          <label for="fieldClassName">Class Name <span class="required">*</span></label>
+          <input type="text" id="fieldClassName" placeholder="e.g. Grade 6A" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldTeacher">Class Teacher <span class="required">*</span></label>
+            <input type="text" id="fieldTeacher" placeholder="e.g. Mrs. Nimaka Perera" required />
+          </div>
+          <div class="form-group">
+            <label for="fieldSection">Section <span class="required">*</span></label>
+            <input type="text" id="fieldSection" placeholder="e.g. G 6 Section" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldStudents">Students <span class="required">*</span></label>
+            <input type="number" id="fieldStudents" min="0" placeholder="e.g. 86" required />
+          </div>
+          <div class="form-group">
+            <label for="fieldRoomNo">Room No <span class="required">*</span></label>
+            <input type="text" id="fieldRoomNo" placeholder="e.g. Block 2, Rm 14" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fieldStatus">Status</label>
+          <select id="fieldStatus">
+            <option value="Active" selected>Active</option>
+            <option value="Full">Full</option>
+          </select>
+        </div>
+
+        <p class="form-error" id="addClassError"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancelAddClassBtn">Cancel</button>
+          <button type="submit" class="btn-primary">Add Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="js/components.js"></script>
+<script src="js/class.js"></script>
+</body>
+</html>
