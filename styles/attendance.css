@@ -67,9 +67,9 @@
 }
 
 .banner-photo {
-  width: 42%;
-  max-width: 420px;
-  height: 150px;
+  width: 62%;
+  max-width: 620px;
+  height: 300px;
   object-fit: cover;
   border-radius: 14px;
   z-index: 1;
@@ -79,7 +79,7 @@
   position: absolute;
   top: 24px;
   right: 32px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(105, 5, 219, 0.781);
   border: 1px solid rgba(255, 255, 255, 0.4);
   color: #fff;
   font-size: 13px;
@@ -95,7 +95,7 @@
   text-decoration: none;
 }
 
-.mark-attendance-btn:hover { background: rgba(255, 255, 255, 0.28); }
+.mark-attendance-btn:hover { background: rgba(131, 62, 243, 0.818); }
 
 /* ---------- Stat Cards ---------- */
 .stats-grid {
