@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Attendance | School Management System</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/attendance.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Topbar gets injected here by js/components.js -->
+  <div id="topbar-placeholder"></div>
+
+  <main class="page-body">
+
+    <!-- Purple header banner -->
+    <section class="attendance-banner">
+      <div class="banner-text">
+        <span class="banner-breadcrumb">Home &gt; Attendance</span>
+        <h1 class="banner-title">Attendance</h1>
+        <p class="banner-subtitle">Track student attendance, view reports, and monitor daily attendance status.</p>
+
+        <div class="banner-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="tableSearch" placeholder="Search students by name, class..." />
+        </div>
+      </div>
+
+      <!-- Save a students-walking photo as images/attendance-banner.jpg -->
+      <img class="banner-photo" src="images/attendance-banner.jpg" alt="Students arriving at school"
+           onerror="this.style.display='none';" />
+
+      <!-- Links to your existing take-attendance.html page -->
+      <a href="take-attendance.html" class="mark-attendance-btn">
+        <i class="fa-solid fa-pen"></i> Mark Attendance
+      </a>
+    </section>
+
+    <!-- Stat cards -->
+    <section class="stats-grid">
+      <div class="stat-card stat-blue">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Total Students</span>
+          <span class="stat-value" id="statTotal">-</span>
+          <span class="stat-trend neutral">Vs Last Month</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Present Today</span>
+          <span class="stat-value" id="statPresent">-</span>
+          <span class="stat-trend up" id="statPresentPct">-</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-orange">
+        <div class="stat-icon"><i class="fa-solid fa-user-xmark"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Absent Today</span>
+          <span class="stat-value" id="statAbsent">-</span>
+          <span class="stat-trend neutral" id="statAbsentPct">of total</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-pink">
+        <div class="stat-icon"><i class="fa-solid fa-calendar-week"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">This Week Attendance</span>
+          <span class="stat-value" id="statWeekAttendance">-</span>
+          <span class="stat-trend neutral">Average</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-teal">
+        <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">This Month Attendance</span>
+          <span class="stat-value" id="statMonthAttendance">-</span>
+          <span class="stat-trend neutral">Average</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table card -->
+    <section class="table-card">
+      <div class="table-toolbar">
+        <h2 class="table-title">Attendance Records</h2>
+
+        <div class="table-filters">
+          <select id="classFilter" class="filter-select">
+            <option value="all">All Classes</option>
+          </select>
+          <select id="sectionFilter" class="filter-select">
+            <option value="all">All Sections</option>
+          </select>
+          <input type="date" id="dateFilter" class="filter-select" />
+          <button class="filters-btn"><i class="fa-solid fa-filter"></i> Filters</button>
+          <button class="export-btn" id="exportBtn"><i class="fa-solid fa-download"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="attendance-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>Class</th>
+              <th>Date</th>
+              <th>Day</th>
+              <th>Status</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+              <th>Remarks</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody"><!-- Rendered by js/attendance.js --></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="paginationSummary">Showing 1 to 4 students</span>
+        <div class="pagination">
+          <button class="page-nav" id="prevPage">&lt;</button>
+          <button class="page-number active">1</button>
+          <button class="page-nav" id="nextPage">&gt;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer gets injected here by js/components.js -->
+  <div id="footer-placeholder"></div>
+
+<script src="js/components.js"></script>
+<script src="js/attendance.js"></script>
+</body>
+</html>

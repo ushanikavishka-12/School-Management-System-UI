@@ -21,7 +21,7 @@ const FALLBACK_COMPONENTS = {
     <a href="dashboard.html" class="nav-link" data-page="dashboard.html">Dashboard</a>
     <a href="students.html"  class="nav-link" data-page="students.html">Students</a>
     <a href="teachers.html"  class="nav-link" data-page="teachers.html">Teachers</a>
-    <a href="classes.html"   class="nav-link" data-page="classes.html">Classes</a>
+    <a href="class.html"   class="nav-link" data-page="class.html">Classes</a>
     <a href="attendance.html" class="nav-link" data-page="attendance.html">Attendance</a>
     <a href="grades.html"    class="nav-link" data-page="grades.html">Grades</a>
   </nav>
