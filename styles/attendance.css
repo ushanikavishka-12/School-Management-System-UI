@@ -316,3 +316,32 @@ input.filter-select { cursor: text; }
 @media (max-width: 640px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ---------- Modal (record details) ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16,16,32,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-card {
+  background: #fff;
+  border-radius: 12px;
+  width: 560px;
+  max-width: calc(100% - 40px);
+  box-shadow: 0 8px 30px rgba(16,16,32,0.25);
+  overflow: hidden;
+}
+.modal-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid #F3F3F8; }
+.modal-header h3 { margin:0; font-size:16px; }
+.modal-close { background:none; border:none; font-size:22px; cursor:pointer; color:#8B93AC; }
+.modal-body { padding:16px 18px; }
+.modal-table { width:100%; border-collapse:collapse; }
+.modal-table th { text-align:left; padding:8px 6px; color:#8B93AC; width:140px; vertical-align:top; font-weight:600; font-size:13px; }
+.modal-table td { padding:8px 6px; color:#1E1B2E; font-size:14px; }
+.modal-footer { display:flex; gap:10px; padding:12px 18px; border-top:1px solid #F3F3F8; justify-content:flex-end; }
+.btn { background:#F3F3FF; border:1px solid #ECECF3; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+.btn-danger { background:#FFECEC; border-color:#F3D6D6; color:#D14343; }

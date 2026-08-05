@@ -98,8 +98,9 @@ function renderAttendanceTable() {
         No attendance records match your search.
       </td></tr>`;
   } else {
-    filtered.forEach((r, index) => {
+    filtered.forEach((r) => {
       const tr = document.createElement("tr");
+      // Pass studentId to action handlers so we can reliably lookup the record
       tr.innerHTML = `
         <td>${r.studentId}</td>
         <td class="student-name-cell">${r.name}</td>
@@ -112,8 +113,8 @@ function renderAttendanceTable() {
         <td>${r.remarks ? r.remarks : '<span class="remark-empty">-</span>'}</td>
         <td>
           <div class="row-actions">
-            <button title="View" onclick="viewRecord(${index})"><i class="fa-solid fa-eye"></i></button>
-            <button title="More" onclick="moreOptions(${index})"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            <button title="View" onclick="viewRecord('${r.studentId}')"><i class="fa-solid fa-eye"></i></button>
+            <button title="More" onclick="moreOptions('${r.studentId}')"><i class="fa-solid fa-ellipsis-vertical"></i></button>
           </div>
         </td>
       `;
@@ -126,8 +127,182 @@ function renderAttendanceTable() {
 }
 
 /* ---------------- Row action placeholders ---------------- */
-function viewRecord(index) { console.log("View record", attendanceData[index]); }
-function moreOptions(index) { console.log("More options for", attendanceData[index]); }
+function findRecordById(studentId) {
+  return attendanceData.find(r => r.studentId === studentId);
+}
+
+function viewRecord(studentId) {
+  const record = findRecordById(studentId);
+  if (!record) return alert('Record not found');
+
+  // Create modal if it doesn't exist
+  let modal = document.getElementById('attendance-record-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'attendance-record-modal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">Record</h3>
+          <button id="modalClose" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer">
+          <button id="modalEdit" class="btn">Edit</button>
+          <button id="modalExport" class="btn">Export</button>
+          <button id="modalDelete" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Wire close
+    modal.querySelector('#modalClose').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+  }
+
+  // Populate body
+  const body = modal.querySelector('#modalBody');
+  body.innerHTML = `
+    <table class="modal-table">
+      <tr><th>Student ID</th><td>${record.studentId}</td></tr>
+      <tr><th>Name</th><td>${record.name}</td></tr>
+      <tr><th>Class</th><td>${record.class}</td></tr>
+      <tr><th>Date</th><td>${formatDisplayDate(record.date)}</td></tr>
+      <tr><th>Day</th><td>${record.day}</td></tr>
+      <tr><th>Status</th><td>${record.status}</td></tr>
+      <tr><th>Check In</th><td>${record.checkIn}</td></tr>
+      <tr><th>Check Out</th><td>${record.checkOut}</td></tr>
+      <tr><th>Remarks</th><td id="modalRemarks">${record.remarks || '-'}</td></tr>
+    </table>
+  `;
+
+  // Wire actions
+  modal.querySelector('#modalExport').onclick = () => exportSingleToCSV(studentId);
+  modal.querySelector('#modalDelete').onclick = () => { modal.remove(); deleteRecord(studentId); };
+  modal.querySelector('#modalEdit').onclick = () => {
+    const newRemarks = prompt('Edit remarks:', record.remarks || '');
+    if (newRemarks === null) return; // cancelled
+    record.remarks = newRemarks.trim();
+    // Optionally prompt for status
+    const newStatus = prompt('Edit status (Present / Absent / Late):', record.status);
+    if (newStatus !== null) record.status = newStatus.trim();
+    renderAttendanceTable();
+    // Update modal content
+    const remarksEl = modal.querySelector('#modalRemarks');
+    if (remarksEl) remarksEl.textContent = record.remarks || '-';
+  };
+}
+
+function moreOptions(studentId) {
+  // For now reuse the details modal which includes actions
+  viewRecord(studentId);
+}
+
+function deleteRecord(studentId) {
+  const idx = attendanceData.findIndex(r => r.studentId === studentId);
+  if (idx === -1) return alert('Record not found');
+  if (!confirm(`Delete attendance record for ${attendanceData[idx].name}?`)) return;
+  attendanceData.splice(idx, 1);
+  renderAttendanceTable();
+}
+
+function exportSingleToCSV(studentId) {
+  const record = findRecordById(studentId);
+  if (!record) return alert('Record not found');
+  const header = ["Student ID","Student Name","Class","Date","Day","Status","Check In","Check Out","Remarks"];
+  const line = [
+    record.studentId,
+    `"${record.name.replace(/"/g, '""')}"`,
+    record.class,
+    record.date,
+    record.day,
+    record.status,
+    record.checkIn,
+    record.checkOut,
+    `"${(record.remarks||'').replace(/"/g,'""')}"`
+  ];
+  const csv = header.join(',') + '\n' + line.join(',');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${record.studentId}-attendance.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- Export (CSV) ---------------- */
+function getFilteredAttendance() {
+  const searchTerm = document.getElementById("tableSearch").value.trim().toLowerCase();
+  const classValue = document.getElementById("classFilter").value;
+  const dateValue = document.getElementById("dateFilter").value;
+
+  return attendanceData.filter((r) => {
+    const matchesSearch =
+      searchTerm === "" ||
+      r.name.toLowerCase().includes(searchTerm) ||
+      r.studentId.toLowerCase().includes(searchTerm) ||
+      r.class.toLowerCase().includes(searchTerm);
+    const matchesClass = classValue === "all" || r.class === classValue;
+    const matchesDate = !dateValue || r.date === dateValue;
+    return matchesSearch && matchesClass && matchesDate;
+  });
+}
+
+function exportFilteredToCSV() {
+  const rows = getFilteredAttendance();
+  if (!rows || rows.length === 0) {
+    alert("No records to export.");
+    return;
+  }
+
+  const header = [
+    "Student ID",
+    "Student Name",
+    "Class",
+    "Date",
+    "Day",
+    "Status",
+    "Check In",
+    "Check Out",
+    "Remarks"
+  ];
+
+  const csvLines = [];
+  csvLines.push(header.join(","));
+
+  rows.forEach((r) => {
+    const line = [
+      r.studentId,
+      `"${r.name.replace(/"/g, '""')}"`,
+      r.class,
+      r.date,
+      r.day,
+      r.status,
+      r.checkIn,
+      r.checkOut,
+      `"${(r.remarks || "").replace(/"/g, '""')}"`
+    ];
+    csvLines.push(line.join(","));
+  });
+
+  const csvContent = csvLines.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const now = new Date();
+  const filename = `attendance-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.csv`;
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   renderStats();
@@ -138,4 +313,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("classFilter").addEventListener("change", renderAttendanceTable);
   document.getElementById("sectionFilter").addEventListener("change", renderAttendanceTable);
   document.getElementById("dateFilter").addEventListener("change", renderAttendanceTable);
+
+  // Export button: download currently filtered rows as CSV
+  const exportBtn = document.getElementById("exportBtn");
+  if (exportBtn) exportBtn.addEventListener("click", exportFilteredToCSV);
 });
