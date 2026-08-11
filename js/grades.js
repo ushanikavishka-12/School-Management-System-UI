@@ -49,7 +49,7 @@ function renderStats() {
   document.getElementById("statAPlus").textContent = schoolWideStats.aPlusCount;
   document.getElementById("statAPlusPct").textContent = schoolWideStats.aPlusPctOfTotal + "% of total";
   document.getElementById("statPassRate").textContent = schoolWideStats.passRatePct + "%";
-  document.getElementById("statSubjectAvg").textContent = schoolWideStats.subjectAveragePct + "%";
+  document.getElementById("statSubjectAvg").textContent = schoolWideStats.subjectAveragePct;
 }
 
 /* ---------------- Filter dropdowns ---------------- */
@@ -63,21 +63,23 @@ function populateFilterDropdowns() {
     classSelect.appendChild(opt);
   });
 
-  // Sections aren't tracked separately in this sample data — placeholder
-  // options for now; wire up to real section data once available.
-  const sectionSelect = document.getElementById("sectionFilter");
-  ["Section A", "Section B", "Section C"].forEach((section) => {
+  // Sections aren't used on this page — removed duplicate grade selector.
+
+  // Subject filter
+  const subjectSelect = document.getElementById("subjectFilter");
+  const subjects = [...new Set(gradesData.map((g) => g.subject))].sort();
+  subjects.forEach((subj) => {
     const opt = document.createElement("option");
-    opt.value = section;
-    opt.textContent = section;
-    sectionSelect.appendChild(opt);
+    opt.value = subj;
+    opt.textContent = subj;
+    subjectSelect.appendChild(opt);
   });
 }
 
 function refreshClassFilter() {
   const classSelect = document.getElementById("classFilter");
   const current = classSelect.value;
-  classSelect.innerHTML = '<option value="all">All Classes</option>';
+    classSelect.innerHTML = '<option value="all">All Grade</option>';
   const classes = [...new Set(gradesData.map((g) => g.class))].sort();
   classes.forEach((cls) => {
     const opt = document.createElement("option");
@@ -88,10 +90,25 @@ function refreshClassFilter() {
   classSelect.value = [...classSelect.options].some((o) => o.value === current) ? current : "all";
 }
 
+function refreshSubjectFilter() {
+  const subjectSelect = document.getElementById("subjectFilter");
+  const current = subjectSelect.value;
+  subjectSelect.innerHTML = '<option value="all">All Subject</option>';
+  const subjects = [...new Set(gradesData.map((g) => g.subject))].sort();
+  subjects.forEach((subj) => {
+    const opt = document.createElement("option");
+    opt.value = subj;
+    opt.textContent = subj;
+    subjectSelect.appendChild(opt);
+  });
+  subjectSelect.value = [...subjectSelect.options].some((o) => o.value === current) ? current : "all";
+}
+
 /* ---------------- Table rendering ---------------- */
 function renderGradesTable() {
   const searchTerm = document.getElementById("tableSearch").value.trim().toLowerCase();
   const classValue = document.getElementById("classFilter").value;
+  const subjectValue = document.getElementById("subjectFilter")?.value || "all";
 
   const filtered = gradesData.filter((g) => {
     const matchesSearch =
@@ -100,7 +117,8 @@ function renderGradesTable() {
       g.studentId.toLowerCase().includes(searchTerm) ||
       g.class.toLowerCase().includes(searchTerm);
     const matchesClass = classValue === "all" || g.class === classValue;
-    return matchesSearch && matchesClass;
+    const matchesSubject = subjectValue === "all" || g.subject === subjectValue;
+    return matchesSearch && matchesClass && matchesSubject;
   });
 
   const tbody = document.getElementById("gradesTableBody");
@@ -138,6 +156,31 @@ function renderGradesTable() {
 
   document.getElementById("paginationSummary").textContent =
     `Showing 1 to ${filtered.length} of ${gradesData.length} students`;
+}
+
+/* ---------------- Export CSV ---------------- */
+function exportVisibleGradesCSV() {
+  const rows = [];
+  const headers = ["Student ID","Student Name","Class","Subject","Term","Score","Grade Point","Rank"];
+  rows.push(headers.join(","));
+
+  const tbody = document.getElementById("gradesTableBody");
+  [...tbody.querySelectorAll("tr")].forEach((tr) => {
+    if (tr.querySelector("td") == null) return;
+    const cols = [...tr.querySelectorAll("td")].slice(0, 9).map(td => td.textContent.trim().replace(/,/g, ""));
+    rows.push(cols.join(","));
+  });
+
+  const csv = rows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `grades_export_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 /* ---------------- Row action placeholders ---------------- */
@@ -186,6 +229,7 @@ function handleAddGradeSubmit(e) {
 
   closeAddGradeModal();
   refreshClassFilter();
+  refreshSubjectFilter();
   renderGradesTable();
 
   // This is where you'd call your real "add grade" API. Example:
@@ -203,13 +247,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("tableSearch").addEventListener("input", renderGradesTable);
   document.getElementById("classFilter").addEventListener("change", renderGradesTable);
-  document.getElementById("sectionFilter").addEventListener("change", renderGradesTable);
-  document.getElementById("dateFilter").addEventListener("change", renderGradesTable);
+  
 
   document.getElementById("openAddGradeBtn").addEventListener("click", openAddGradeModal);
   document.getElementById("closeAddGradeBtn").addEventListener("click", closeAddGradeModal);
   document.getElementById("cancelAddGradeBtn").addEventListener("click", closeAddGradeModal);
   document.getElementById("addGradeForm").addEventListener("submit", handleAddGradeSubmit);
+
+  // Subject filter and export button wiring
+  const subjectEl = document.getElementById("subjectFilter");
+  if (subjectEl) subjectEl.addEventListener("change", renderGradesTable);
+  const exportBtn = document.getElementById("exportBtn");
+  if (exportBtn) exportBtn.addEventListener("click", exportVisibleGradesCSV);
 
   document.getElementById("addGradeOverlay").addEventListener("click", (e) => {
     if (e.target.id === "addGradeOverlay") closeAddGradeModal();
