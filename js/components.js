@@ -41,7 +41,7 @@ const FALLBACK_COMPONENTS = {
   <div class="footer-content">
 
     <div class="footer-brand-col">
-      <div class="footer-brand-name">EgoTECH World</div>
+      <div class="footer-brand-name">EGOTECH WORLD</div>
       <p class="footer-brand-desc">
         Developing ready made and custom solutions for modern challenges.
       </p>
