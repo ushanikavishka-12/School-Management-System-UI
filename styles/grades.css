@@ -68,8 +68,8 @@
 
 .banner-photo {
   width: 42%;
-  max-width: 420px;
-  height: 150px;
+  max-width: 440px;
+  height: 280px;
   object-fit: cover;
   border-radius: 14px;
   z-index: 1;
@@ -77,11 +77,11 @@
 
 .add-grade-btn {
   position: absolute;
-  top: 24px;
+  top: 27px;
   right: 32px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #fff;
+  background: rgba(98, 10, 166, 0.842);
+  border: 1px solid rgba(255, 255, 255, 0.863);
+  color: #f7f2f2;
   font-size: 13px;
   font-weight: 600;
   padding: 10px 18px;
@@ -94,7 +94,7 @@
   z-index: 3;
 }
 
-.add-grade-btn:hover { background: rgba(255, 255, 255, 0.28); }
+.add-grade-btn:hover { background: rgb(117, 3, 93); }
 
 /* ---------- Stat Cards ---------- */
 .stats-grid {

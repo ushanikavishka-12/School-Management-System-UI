@@ -23,7 +23,7 @@ const schoolWideStats = {
   aPlusCount: 396,
   aPlusPctOfTotal: 18.2,
   passRatePct: 94.8,
-  subjectAveragePct: 96.3
+  subjectAveragePct: 18
 };
 
 // Converts a numeric score into a letter grade + grade point. Adjust these
