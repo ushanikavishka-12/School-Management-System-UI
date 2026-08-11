@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grades | School Management System</title>
+
+<link rel="stylesheet" href="styles/components.css" />
+<link rel="stylesheet" href="styles/grades.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Topbar gets injected here by js/components.js -->
+  <div id="topbar-placeholder"></div>
+
+  <main class="page-body">
+
+    <!-- Purple header banner -->
+    <section class="grades-banner">
+      <div class="banner-text">
+        <span class="banner-breadcrumb">Home &gt; Grades</span>
+        <h1 class="banner-title">Grades</h1>
+        <p class="banner-subtitle">View and manage student grades, academic performance, and generate reports.</p>
+
+        <div class="banner-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="tableSearch" placeholder="Search students by name, class..." />
+        </div>
+      </div>
+
+      <!-- Save a classroom photo as images/grades-banner.jpg -->
+      <img class="banner-photo" src="images/grades-banner.jpg" alt="Students at school"
+           onerror="this.style.display='none';" />
+
+      <button class="add-grade-btn" id="openAddGradeBtn">
+        <i class="fa-solid fa-plus"></i> Add Grade
+      </button>
+    </section>
+
+    <!-- Stat cards -->
+    <section class="stats-grid">
+      <div class="stat-card stat-blue">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Total Students</span>
+          <span class="stat-value" id="statTotal">-</span>
+          <span class="stat-trend neutral">Vs Last Month</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Average Grade</span>
+          <span class="stat-value" id="statAvgGrade">-</span>
+          <span class="stat-trend up">↑ 3.7% Vs Last Month</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-orange">
+        <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">A+ Grades</span>
+          <span class="stat-value" id="statAPlus">-</span>
+          <span class="stat-trend neutral" id="statAPlusPct">of total</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-pink">
+        <div class="stat-icon"><i class="fa-solid fa-square-check"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Pass Rate</span>
+          <span class="stat-value" id="statPassRate">-</span>
+          <span class="stat-trend up">↑ 2.9% Vs Last Month</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-teal">
+        <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">Subjects</span>
+          <span class="stat-value" id="statSubjectAvg">-</span>
+          <span class="stat-trend neutral">Average</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Table card -->
+    <section class="table-card">
+      <div class="table-toolbar">
+        <h2 class="table-title">Grade Records</h2>
+
+        <div class="table-filters">
+          <select id="classFilter" class="filter-select">
+            <option value="all">All Classes</option>
+          </select>
+          <select id="sectionFilter" class="filter-select">
+            <option value="all">All Sections</option>
+          </select>
+          <input type="date" id="dateFilter" class="filter-select" />
+          <button class="filters-btn"><i class="fa-solid fa-filter"></i> Filters</button>
+          <button class="export-btn" id="exportBtn"><i class="fa-solid fa-download"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="grades-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>Class</th>
+              <th>Subject</th>
+              <th>Term</th>
+              <th>Grade</th>
+              <th>Score (%)</th>
+              <th>Grade Point</th>
+              <th>Rank</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="gradesTableBody"><!-- Rendered by js/grades.js --></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="paginationSummary">Showing 1 to 4 students</span>
+        <div class="pagination">
+          <button class="page-nav" id="prevPage">&lt;</button>
+          <button class="page-number active">1</button>
+          <button class="page-nav" id="nextPage">&gt;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer gets injected here by js/components.js -->
+  <div id="footer-placeholder"></div>
+
+  <!-- ================= Add Grade Modal ================= -->
+  <div class="modal-overlay" id="addGradeOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Add Grade</h2>
+        <button class="modal-close" id="closeAddGradeBtn">✕</button>
+      </div>
+
+      <form id="addGradeForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldStudentId">Student ID <span class="required">*</span></label>
+            <input type="text" id="fieldStudentId" placeholder="e.g. ST-1005" required />
+          </div>
+          <div class="form-group">
+            <label for="fieldStudentName">Student Name <span class="required">*</span></label>
+            <input type="text" id="fieldStudentName" placeholder="e.g. Sudam Fernando" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldClass">Class <span class="required">*</span></label>
+            <input type="text" id="fieldClass" placeholder="e.g. 6 A" required />
+          </div>
+          <div class="form-group">
+            <label for="fieldSubject">Subject <span class="required">*</span></label>
+            <select id="fieldSubject" required>
+              <option value="" disabled selected>Select subject</option>
+              <option>Mathematics</option>
+              <option>Science</option>
+              <option>English</option>
+              <option>History</option>
+              <option>Information Technology</option>
+              <option>Art</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fieldTerm">Term <span class="required">*</span></label>
+            <input type="text" id="fieldTerm" placeholder="e.g. Term 2 (2026)" required />
+          </div>
+          <div class="form-group">
+            <label for="fieldScore">Score (%) <span class="required">*</span></label>
+            <input type="number" id="fieldScore" min="0" max="100" step="0.1" placeholder="e.g. 87.5" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fieldRank">Rank <span class="hint">(optional, e.g. 3/36)</span></label>
+          <input type="text" id="fieldRank" placeholder="e.g. 3/36" />
+        </div>
+
+        <p class="form-hint">Grade letter and grade point are calculated automatically from the score you enter.</p>
+
+        <p class="form-error" id="addGradeError"></p>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancelAddGradeBtn">Cancel</button>
+          <button type="submit" class="btn-primary">Add Grade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="js/components.js"></script>
+<script src="js/grades.js"></script>
+</body>
+</html>
