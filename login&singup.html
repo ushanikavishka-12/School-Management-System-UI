@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign Up | Bright Future International School</title>
+
+<link rel="stylesheet" href="styles/login&signup.css" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="auth-page">
+
+    <!-- ================= LEFT PANEL (branding) ================= -->
+    <div class="auth-brand-panel">
+
+      <div class="brand-logo">
+        <span class="brand-logo-icon">🎓</span>
+        <div>
+          <span class="brand-logo-name">Bright Future</span>
+          <span class="brand-logo-sub">International School</span>
+        </div>
+      </div>
+
+      <h1 class="brand-headline">Create Your Account</h1>
+      <p class="brand-subtext">Join Bright Future School Management System...</p>
+
+      <div class="brand-features">
+        <div class="brand-feature">
+          <span class="brand-feature-icon">🔒</span>
+          <div>
+            <span class="brand-feature-title">Secure Account</span>
+            <span class="brand-feature-desc">Your data is safe and protected with us.</span>
+          </div>
+        </div>
+
+        <div class="brand-feature">
+          <span class="brand-feature-icon">📊</span>
+          <div>
+            <span class="brand-feature-title">Easy Access</span>
+            <span class="brand-feature-desc">Access all features with your account.</span>
+          </div>
+        </div>
+
+        <div class="brand-feature">
+          <span class="brand-feature-icon">📈</span>
+          <div>
+            <span class="brand-feature-title">Manage Efficiently</span>
+            <span class="brand-feature-desc">Streamline school management tasks.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save a school building photo as images/school-building.jpg -->
+      <img class="brand-photo" src="images/school-building.jpg" alt="School building"
+           onerror="this.style.display='none';" />
+    </div>
+
+    <!-- ================= RIGHT PANEL (forms) ================= -->
+    <div class="auth-form-panel">
+
+      <div class="auth-tabs">
+        <button class="auth-tab" id="tabLogin" onclick="switchTab('login')">Login</button>
+        <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup')">Sign up</button>
+      </div>
+
+      <!-- ---------- SIGN UP FORM ---------- -->
+      <div class="auth-form-wrap" id="signupWrap">
+        <h2 class="auth-title">Create your account</h2>
+        <p class="auth-subtitle">Fill in your details to get started.</p>
+
+        <form id="signupForm" novalidate>
+          <div class="form-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" placeholder="Kamal Perera" required />
+          </div>
+
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" placeholder="you@gmail.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="signupPhone">Phone Number</label>
+            <input type="tel" id="signupPhone" placeholder="+94 XXXXXXXXX" required />
+          </div>
+
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <div class="password-field">
+              <input type="password" id="signupPassword" placeholder="••••••••" required minlength="8" />
+              <button type="button" class="toggle-password" data-target="signupPassword">👁</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="signupConfirmPassword">Confirm Password</label>
+            <div class="password-field">
+              <input type="password" id="signupConfirmPassword" placeholder="••••••••" required minlength="8" />
+              <button type="button" class="toggle-password" data-target="signupConfirmPassword">👁</button>
+            </div>
+          </div>
+
+          <label class="checkbox-row">
+            <input type="checkbox" id="agreeTerms" required />
+            <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+          </label>
+
+          <p class="form-error" id="signupError"></p>
+
+          <button type="submit" class="auth-submit-btn">Sign up</button>
+
+          <div class="auth-divider"><span>OR</span></div>
+
+          <button type="button" class="google-btn">
+            <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.9 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.3 35.4 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.7l6.3 5.3C39.9 37 44 31.4 44 24c0-1.3-.1-2.7-.4-3.5z"/>
+            </svg>
+            Continue with Google
+          </button>
+
+          <p class="auth-switch-text">
+            Already have an account? <a href="#" onclick="switchTab('login'); return false;">Login</a>
+          </p>
+        </form>
+      </div>
+
+      <!-- ---------- LOGIN FORM ---------- -->
+      <div class="auth-form-wrap" id="loginWrap" style="display:none;">
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Login to your account to continue.</p>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="you@gmail.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <div class="password-field">
+              <input type="password" id="loginPassword" placeholder="••••••••" required />
+              <button type="button" class="toggle-password" data-target="loginPassword">👁</button>
+            </div>
+          </div>
+
+          <div class="login-row">
+            <label class="checkbox-row inline">
+              <input type="checkbox" id="rememberMe" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <p class="form-error" id="loginError"></p>
+
+          <button type="submit" class="auth-submit-btn">Login</button>
+
+          <div class="auth-divider"><span>OR</span></div>
+
+          <button type="button" class="google-btn">
+            <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.9 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.3 35.4 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.3 5.7l6.3 5.3C39.9 37 44 31.4 44 24c0-1.3-.1-2.7-.4-3.5z"/>
+            </svg>
+            Continue with Google
+          </button>
+
+          <p class="auth-switch-text">
+            Don't have an account? <a href="#" onclick="switchTab('signup'); return false;">Sign up</a>
+          </p>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+<script src="js/login&signup.js"></script>
+</body>
+</html>
