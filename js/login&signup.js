@@ -41,6 +41,64 @@ function setupPasswordToggles() {
   });
 }
 
+/* ---------------- Google Sign-In ---------------- */
+function handleGoogleContinue(event) {
+  const button = event.currentTarget;
+  const form = button.closest("form");
+  const isLoginForm = form && form.id === "loginForm";
+  const emailFieldId = isLoginForm ? "loginEmail" : "signupEmail";
+  const emailField = document.getElementById(emailFieldId);
+
+  if (window.google && window.google.accounts && window.google.accounts.id && window.GOOGLE_CLIENT_ID) {
+    window.google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        console.warn("Google One Tap not displayed:", notification);
+      }
+    });
+    return;
+  }
+
+  const suggestedEmail = emailField ? emailField.value.trim() : "";
+  const email = window.prompt("Enter your Google email to continue:", suggestedEmail || "you@gmail.com");
+
+  if (!email) {
+    return;
+  }
+
+  const trimmedEmail = email.trim();
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(trimmedEmail)) {
+    window.alert("Please enter a valid Google email address.");
+    return;
+  }
+
+  if (emailField) {
+    emailField.value = trimmedEmail;
+  }
+
+  const displayName = trimmedEmail.split("@")[0]
+    .replace(/[._-]/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const user = {
+    name: displayName || "Google User",
+    email: trimmedEmail,
+    authProvider: "google",
+  };
+
+  localStorage.setItem("currentUser", JSON.stringify(user));
+  console.log("Google sign-in submitted:", user);
+  window.alert(`Welcome ${user.name}! You are signed in with Google.`);
+  window.location.href = "dashboard.html";
+}
+
+function setupGoogleButtons() {
+  document.querySelectorAll(".google-btn").forEach((button) => {
+    button.addEventListener("click", handleGoogleContinue);
+  });
+}
+
 /* ---------------- Sign up form ---------------- */
 function setupSignupForm() {
   const form = document.getElementById("signupForm");
@@ -136,6 +194,7 @@ function setupLoginForm() {
 
 document.addEventListener("DOMContentLoaded", () => {
   setupPasswordToggles();
+  setupGoogleButtons();
   setupSignupForm();
   setupLoginForm();
 });
